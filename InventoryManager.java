@@ -34,6 +34,7 @@ public class InventoryManager {
 
             while (!validId) {
                 id = Validator.readValidId(sc, "Enter ID: ");
+                id = id.toUpperCase();
                 if (findItemById(id) == null) {
                     validId = true;
                     break;
@@ -52,7 +53,6 @@ public class InventoryManager {
 
             System.out.println("Item added successfully!");
             printTable(items, true, "ADDED ITEMS");
-
         } catch (CancelledException e) {
             System.out.println("Cancelled. Returning to main menu.");
             System.out.println();
@@ -94,7 +94,6 @@ public class InventoryManager {
             }
 
             printItemDetails(item, "ITEM DETAILS");
-
             System.out.println("1 - Quantity");
             System.out.println("2 - Price");
             int fieldChoice = Validator.readSubMenuChoice(sc, "Enter choice: ", 1, 2);
@@ -114,7 +113,6 @@ public class InventoryManager {
                 System.out.println("Price of Item " + item.getName() + " is updated from " + formatPrice(oldValue) + " to " + formatPrice(newValue));
                 System.out.println();
             }
-
         } catch (CancelledException e) {
             System.out.println("Cancelled. Returning to main menu.");
             System.out.println();
@@ -128,6 +126,7 @@ public class InventoryManager {
             System.out.println();
             return;
         }
+
         printHeaderBanner("REMOVE ITEM");
 
         try {
@@ -148,7 +147,6 @@ public class InventoryManager {
             items.remove(item);
             System.out.println("Item " + item.getName() + " has been removed from the inventory");
             printTable(items, true);
-
         } catch (CancelledException e) {
             System.out.println("Cancelled. Returning to main menu.");
             System.out.println();
@@ -164,7 +162,6 @@ public class InventoryManager {
         }
 
         int bannerWidth = printHeaderBanner("DISPLAY ITEMS BY CATEGORY");
-
         printCategoryList(bannerWidth);
 
         try {
@@ -186,6 +183,7 @@ public class InventoryManager {
             }
 
             ArrayList<Item> filtered = new ArrayList<>();
+
             for (Item i : items) {
                 if (i.getCategory().equalsIgnoreCase(category)) {
                     filtered.add(i);
@@ -193,7 +191,6 @@ public class InventoryManager {
             }
 
             printTable(filtered, false, category.toUpperCase() + " ITEMS");
-
         } catch (CancelledException e) {
             System.out.println("Cancelled. Returning to main menu.");
             System.out.println();
@@ -210,7 +207,6 @@ public class InventoryManager {
 
         int itemsWidth = computeItemsBorderLength(items, true);
         printHeaderBanner("DISPLAY ALL ITEMS", itemsWidth);
-
         printTable(items, true);
     }
 
@@ -237,7 +233,6 @@ public class InventoryManager {
             }
 
             printItemDetails(item, "SEARCH RESULT");
-
         } catch (CancelledException e) {
             System.out.println("Cancelled. Returning to main menu.");
             System.out.println();
@@ -272,6 +267,7 @@ public class InventoryManager {
         for (String line : lines) {
             System.out.println(line);
         }
+
         System.out.println(detailsBorder);
         System.out.println();
     }
@@ -283,6 +279,7 @@ public class InventoryManager {
             System.out.println();
             return;
         }
+
         printHeaderBanner("SORT ITEMS");
 
         try {
@@ -303,7 +300,6 @@ public class InventoryManager {
 
                     long valueA = (fieldChoice == 1) ? a.getQuantity() : a.getPrice();
                     long valueB = (fieldChoice == 1) ? b.getQuantity() : b.getPrice();
-
                     boolean shouldSwap = (orderChoice == 1) ? (valueA > valueB) : (valueA < valueB);
 
                     if (shouldSwap) {
@@ -315,7 +311,6 @@ public class InventoryManager {
 
             String sortedByField = (fieldChoice == 1) ? "QUANTITY" : "PRICE";
             printTable(sorted, true, "SORTED ITEMS BY " + sortedByField);
-
         } catch (CancelledException e) {
             System.out.println("Cancelled. Returning to main menu.");
             System.out.println();
@@ -346,14 +341,15 @@ public class InventoryManager {
                 return i;
             }
         }
+
         return null;
     }
 
     private String formatPrice(long scaledPrice) {
         long wholePart = scaledPrice / Validator.PRICE_SCALE;
         long decimalPart = scaledPrice % Validator.PRICE_SCALE;
-
         int decimalPlaces;
+
         if (decimalPart % 100 == 0) {
             decimalPlaces = 2;
         } else if (decimalPart % 10 == 0) {
@@ -384,6 +380,7 @@ public class InventoryManager {
                 rows.add(new String[]{i.getId(), i.getName(), String.valueOf(i.getQuantity()), priceText});
             }
         }
+
         return rows;
     }
 
@@ -394,11 +391,13 @@ public class InventoryManager {
         for (int c = 0; c < columnCount; c++) {
             columnWidth[c] = headers[c].length();
         }
+
         for (String[] row : rows) {
             for (int c = 0; c < columnCount; c++) {
                 columnWidth[c] = Math.max(columnWidth[c], row[c].length());
             }
         }
+
         return columnWidth;
     }
 
@@ -406,6 +405,7 @@ public class InventoryManager {
         if (list.isEmpty()) {
             return 42;
         }
+
         String[] headers = getTableHeaders(showCategory);
         ArrayList<String[]> rows = buildTableRows(list, showCategory);
         int[] columnWidth = computeColumnWidths(headers, rows);
@@ -441,6 +441,7 @@ public class InventoryManager {
         for (String[] row : rows) {
             System.out.println(buildRowLine(row, columnWidth));
         }
+
         System.out.println(border);
         System.out.println();
     }
@@ -452,6 +453,7 @@ public class InventoryManager {
         for (int width : columnWidth) {
             sb.append("-".repeat(width + 2)).append("-");
         }
+
         return sb.toString();
     }
 
@@ -462,6 +464,7 @@ public class InventoryManager {
         for (int c = 0; c < values.length; c++) {
             sb.append(" ").append(String.format("%-" + columnWidth[c] + "s", values[c])).append("  ");
         }
+
         return sb.toString();
     }
 
@@ -478,6 +481,7 @@ public class InventoryManager {
         if (text.length() >= width) {
             return text.substring(0, width);
         }
+
         int totalPadding = width - text.length();
         int left = totalPadding / 2;
         int right = totalPadding - left;
