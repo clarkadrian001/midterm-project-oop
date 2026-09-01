@@ -192,6 +192,8 @@ public class InventoryManager {
                 }
             }
 
+            // The banner and table can naturally differ in width
+            // now, since the table is labeled and shown on its own.
             printTable(filtered, false, category.toUpperCase() + " ITEMS");
 
         } catch (CancelledException e) {
@@ -244,6 +246,26 @@ public class InventoryManager {
         }
     }
 
+    /**
+     * Prints a single item's details as a bordered box with a
+     * banner above it, e.g.:
+     *
+     * ================ SEARCH RESULT ================
+     * -------------------------------------------------
+     * Item ID  : C001
+     * Name     : Denim Jacket
+     * Category : Clothing
+     * Quantity : 10
+     * Price    : Php 1,200.50
+     * -------------------------------------------------
+     *
+     * The banner and the box are sized to whichever is
+     * naturally wider - the banner's own fixed pattern, or the
+     * longest "Label : Value" line - so they always match each
+     * other exactly (mutual alignment). "title" lets different
+     * screens reuse this with their own wording (e.g. Search
+     * Item uses "SEARCH RESULT", Update Item uses "ITEM DETAILS").
+     */
     private void printItemDetails(Item item, String title) {
         String[] labels = {"Item ID", "Name", "Category", "Quantity", "Price"};
         String[] values = {item.getId(), item.getName(), item.getCategory(), String.valueOf(item.getQuantity()), formatPrice(item.getPrice())};
@@ -264,6 +286,8 @@ public class InventoryManager {
         String defaultBanner = "================ " + title + " ================";
         int sharedWidth = Math.max(defaultBanner.length(), maxLineLength);
 
+        // Printed directly (not through printHeaderBanner()) so
+        // callers control their own spacing around this box.
         System.out.println(buildFilledBanner(title, sharedWidth, '='));
 
         String detailsBorder = "-".repeat(sharedWidth);
@@ -412,10 +436,20 @@ public class InventoryManager {
         return buildBorderLine(columnWidth).length();
     }
 
+    /**
+     * Prints the table with the default "ITEMS" title - used by
+     * every screen except Add Item's post-add confirmation.
+     */
     private void printTable(ArrayList<Item> list, boolean showCategory) {
         printTable(list, showCategory, "ITEMS");
     }
 
+    /**
+     * Same table-printing logic as above, but with a custom
+     * title instead of always saying "ITEMS" - e.g. Add Item
+     * uses "ADDED ITEMS" here to label the result of adding a
+     * new item, without needing a second banner above it.
+     */
     private void printTable(ArrayList<Item> list, boolean showCategory, String title) {
         if (list.isEmpty()) {
             System.out.println("No items to display.");
