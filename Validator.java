@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Validator {
@@ -7,6 +8,7 @@ public class Validator {
     public static final int MAX_NAME_LENGTH = 50;
     public static final int MAX_QUANTITY = 1_000_000;
     public static final long MAX_PRICE = 10_000_000L;
+
     private static void checkForCancel(String input) {
         if (input.equals("0")) {
             throw new CancelledException();
@@ -15,6 +17,15 @@ public class Validator {
 
     private static boolean isSingleDigit(String rawInput) {
         return rawInput.length() == 1 && Character.isDigit(rawInput.charAt(0));
+    }
+
+    public static Item findItemById(ArrayList<Item> items, String id) {
+        for (Item i : items) {
+            if (i.getId().equalsIgnoreCase(id)) {
+                return i;
+            }
+        }
+        return null;
     }
 
     public static boolean isValidCategory(String category) {
@@ -169,4 +180,7 @@ public class Validator {
             }
         }
     }
+}
+
+class CancelledException extends RuntimeException {
 }

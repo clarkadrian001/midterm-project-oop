@@ -21,7 +21,8 @@ public class Main {
             System.out.println("7 - Sort Items");
             System.out.println("8 - Display Low Stock Items");
             System.out.println("9 - Exit");
-            System.out.println("\nNote: Press 0 to cancel anytime.");
+            System.out.println();
+            System.out.println("Note: Press 0 to cancel anytime.");
 
             int choice = Validator.readMenuChoice(sc, "Enter choice: ", 1, 9);
 
@@ -53,7 +54,8 @@ public class Main {
                 case 9:
                     running = false;
                     System.out.println();
-                    System.out.println("Exiting program. Thank you for using the Inventory Management System. Goodbye!");
+                    System.out.println("================ EXIT ================");
+                    System.out.println("Exiting program. Goodbye!");
                     break;
             }
         }

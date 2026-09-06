@@ -3,13 +3,14 @@ import java.util.Scanner;
 
 public class InventoryManager {
     private ArrayList<Item> items;
+
     public InventoryManager() {
         items = new ArrayList<>();
     }
 
     public void addItem(Scanner sc) {
-        int bannerWidth = printHeaderBanner("ADD ITEM");
-        printCategoryList(bannerWidth);
+        int bannerWidth = Design.printHeaderBanner("ADD ITEM");
+        Design.printCategoryList(bannerWidth);
 
         try {
             String category = null;
@@ -34,8 +35,8 @@ public class InventoryManager {
 
             while (!validId) {
                 id = Validator.readValidId(sc, "Enter ID: ");
-                id = id.toUpperCase();
-                if (findItemById(id) == null) {
+                id = id.toUpperCase(); // IDs are always stored and shown in uppercase
+                if (Validator.findItemById(items, id) == null) {
                     validId = true;
                     break;
                 }
@@ -52,7 +53,8 @@ public class InventoryManager {
             items.add(newItem);
 
             System.out.println("Item added successfully!");
-            printTable(items, true, "ADDED ITEMS");
+            Design.printTable(items, true, "ADDED ITEMS");
+
         } catch (CancelledException e) {
             System.out.println("Cancelled. Returning to main menu.");
             System.out.println();
@@ -77,7 +79,7 @@ public class InventoryManager {
             System.out.println();
             return;
         }
-        printHeaderBanner("UPDATE ITEM");
+        Design.printHeaderBanner("UPDATE ITEM");
 
         try {
             Item item = null;
@@ -85,7 +87,7 @@ public class InventoryManager {
 
             while (!validId) {
                 String id = Validator.readValidId(sc, "Enter ID of item to update: ");
-                item = findItemById(id);
+                item = Validator.findItemById(items, id);
                 if (item != null) {
                     validId = true;
                     break;
@@ -93,7 +95,8 @@ public class InventoryManager {
                 System.out.println("Item not found!");
             }
 
-            printItemDetails(item, "ITEM DETAILS");
+            Design.printItemDetails(item, "ITEM DETAILS");
+
             System.out.println("1 - Quantity");
             System.out.println("2 - Price");
             int fieldChoice = Validator.readSubMenuChoice(sc, "Enter choice: ", 1, 2);
@@ -110,9 +113,10 @@ public class InventoryManager {
                 long newValue = Validator.readPositivePrice(sc, "Enter new Price: ");
 
                 item.setPrice(newValue);
-                System.out.println("Price of Item " + item.getName() + " is updated from " + formatPrice(oldValue) + " to " + formatPrice(newValue));
+                System.out.println("Price of Item " + item.getName() + " is updated from " + Design.formatPrice(oldValue) + " to " + Design.formatPrice(newValue));
                 System.out.println();
             }
+
         } catch (CancelledException e) {
             System.out.println("Cancelled. Returning to main menu.");
             System.out.println();
@@ -126,8 +130,7 @@ public class InventoryManager {
             System.out.println();
             return;
         }
-
-        printHeaderBanner("REMOVE ITEM");
+        Design.printHeaderBanner("REMOVE ITEM");
 
         try {
             Item item = null;
@@ -135,7 +138,7 @@ public class InventoryManager {
 
             while (!validId) {
                 String id = Validator.readValidId(sc, "Enter ID of item to remove: ");
-                item = findItemById(id);
+                item = Validator.findItemById(items, id);
 
                 if (item != null) {
                     validId = true;
@@ -146,7 +149,8 @@ public class InventoryManager {
 
             items.remove(item);
             System.out.println("Item " + item.getName() + " has been removed from the inventory");
-            printTable(items, true);
+            Design.printTable(items, true);
+
         } catch (CancelledException e) {
             System.out.println("Cancelled. Returning to main menu.");
             System.out.println();
@@ -161,8 +165,9 @@ public class InventoryManager {
             return;
         }
 
-        int bannerWidth = printHeaderBanner("DISPLAY ITEMS BY CATEGORY");
-        printCategoryList(bannerWidth);
+        int bannerWidth = Design.printHeaderBanner("DISPLAY ITEMS BY CATEGORY");
+
+        Design.printCategoryList(bannerWidth);
 
         try {
             String category = null;
@@ -183,14 +188,14 @@ public class InventoryManager {
             }
 
             ArrayList<Item> filtered = new ArrayList<>();
-
             for (Item i : items) {
                 if (i.getCategory().equalsIgnoreCase(category)) {
                     filtered.add(i);
                 }
             }
 
-            printTable(filtered, false, category.toUpperCase() + " ITEMS");
+            Design.printTable(filtered, false, category.toUpperCase() + " ITEMS");
+
         } catch (CancelledException e) {
             System.out.println("Cancelled. Returning to main menu.");
             System.out.println();
@@ -205,9 +210,10 @@ public class InventoryManager {
             return;
         }
 
-        int itemsWidth = computeItemsBorderLength(items, true);
-        printHeaderBanner("DISPLAY ALL ITEMS", itemsWidth);
-        printTable(items, true);
+        int itemsWidth = Design.computeItemsBorderLength(items, true);
+        Design.printHeaderBanner("DISPLAY ALL ITEMS", itemsWidth);
+
+        Design.printTable(items, true);
     }
 
     public void searchItem(Scanner sc) {
@@ -224,7 +230,7 @@ public class InventoryManager {
 
             while (!validId) {
                 String id = Validator.readValidId(sc, "Enter ID to search: ");
-                item = findItemById(id);
+                item = Validator.findItemById(items, id);
                 if (item != null) {
                     validId = true;
                 } else {
@@ -232,44 +238,12 @@ public class InventoryManager {
                 }
             }
 
-            printItemDetails(item, "SEARCH RESULT");
+            Design.printItemDetails(item, "SEARCH RESULT");
+
         } catch (CancelledException e) {
             System.out.println("Cancelled. Returning to main menu.");
             System.out.println();
         }
-    }
-
-    private void printItemDetails(Item item, String title) {
-        String[] labels = {"Item ID", "Name", "Category", "Quantity", "Price"};
-        String[] values = {item.getId(), item.getName(), item.getCategory(), String.valueOf(item.getQuantity()), formatPrice(item.getPrice())};
-
-        int maxLabelLength = 0;
-        for (String label : labels) {
-            maxLabelLength = Math.max(maxLabelLength, label.length());
-        }
-
-        String[] lines = new String[labels.length];
-        int maxLineLength = 0;
-
-        for (int i = 0; i < labels.length; i++) {
-            lines[i] = String.format("%-" + maxLabelLength + "s : %s", labels[i], values[i]);
-            maxLineLength = Math.max(maxLineLength, lines[i].length());
-        }
-
-        String defaultBanner = "================ " + title + " ================";
-        int sharedWidth = Math.max(defaultBanner.length(), maxLineLength);
-
-        System.out.println(buildFilledBanner(title, sharedWidth, '='));
-
-        String detailsBorder = "-".repeat(sharedWidth);
-        System.out.println(detailsBorder);
-
-        for (String line : lines) {
-            System.out.println(line);
-        }
-
-        System.out.println(detailsBorder);
-        System.out.println();
     }
 
     public void sortItems(Scanner sc) {
@@ -279,8 +253,7 @@ public class InventoryManager {
             System.out.println();
             return;
         }
-
-        printHeaderBanner("SORT ITEMS");
+        Design.printHeaderBanner("SORT ITEMS");
 
         try {
             System.out.println("1 - Quantity");
@@ -300,6 +273,7 @@ public class InventoryManager {
 
                     long valueA = (fieldChoice == 1) ? a.getQuantity() : a.getPrice();
                     long valueB = (fieldChoice == 1) ? b.getQuantity() : b.getPrice();
+
                     boolean shouldSwap = (orderChoice == 1) ? (valueA > valueB) : (valueA < valueB);
 
                     if (shouldSwap) {
@@ -310,7 +284,8 @@ public class InventoryManager {
             }
 
             String sortedByField = (fieldChoice == 1) ? "QUANTITY" : "PRICE";
-            printTable(sorted, true, "SORTED ITEMS BY " + sortedByField);
+            Design.printTable(sorted, true, "SORTED ITEMS BY " + sortedByField);
+
         } catch (CancelledException e) {
             System.out.println("Cancelled. Returning to main menu.");
             System.out.println();
@@ -332,185 +307,6 @@ public class InventoryManager {
             }
         }
 
-        printTable(lowStock, true, "LOW STOCK ITEMS");
-    }
-
-    private Item findItemById(String id) {
-        for (Item i : items) {
-            if (i.getId().equalsIgnoreCase(id)) {
-                return i;
-            }
-        }
-
-        return null;
-    }
-
-    private String formatPrice(long scaledPrice) {
-        long wholePart = scaledPrice / Validator.PRICE_SCALE;
-        long decimalPart = scaledPrice % Validator.PRICE_SCALE;
-        int decimalPlaces;
-
-        if (decimalPart % 100 == 0) {
-            decimalPlaces = 2;
-        } else if (decimalPart % 10 == 0) {
-            decimalPlaces = 3;
-        } else {
-            decimalPlaces = 4;
-        }
-
-        String decimalDigits = String.format("%04d", decimalPart).substring(0, decimalPlaces);
-        String wholePartFormatted = String.format("%,d", wholePart);
-        return "Php " + wholePartFormatted + "." + decimalDigits;
-    }
-
-    private String[] getTableHeaders(boolean showCategory) {
-        return showCategory
-                ? new String[]{"ID", "Name", "Quantity", "Price", "Category"}
-                : new String[]{"ID", "Name", "Quantity", "Price"};
-    }
-
-    private ArrayList<String[]> buildTableRows(ArrayList<Item> list, boolean showCategory) {
-        ArrayList<String[]> rows = new ArrayList<>();
-
-        for (Item i : list) {
-            String priceText = formatPrice(i.getPrice());
-            if (showCategory) {
-                rows.add(new String[]{i.getId(), i.getName(), String.valueOf(i.getQuantity()), priceText, i.getCategory()});
-            } else {
-                rows.add(new String[]{i.getId(), i.getName(), String.valueOf(i.getQuantity()), priceText});
-            }
-        }
-
-        return rows;
-    }
-
-    private int[] computeColumnWidths(String[] headers, ArrayList<String[]> rows) {
-        int columnCount = headers.length;
-        int[] columnWidth = new int[columnCount];
-
-        for (int c = 0; c < columnCount; c++) {
-            columnWidth[c] = headers[c].length();
-        }
-
-        for (String[] row : rows) {
-            for (int c = 0; c < columnCount; c++) {
-                columnWidth[c] = Math.max(columnWidth[c], row[c].length());
-            }
-        }
-
-        return columnWidth;
-    }
-
-    private int computeItemsBorderLength(ArrayList<Item> list, boolean showCategory) {
-        if (list.isEmpty()) {
-            return 42;
-        }
-
-        String[] headers = getTableHeaders(showCategory);
-        ArrayList<String[]> rows = buildTableRows(list, showCategory);
-        int[] columnWidth = computeColumnWidths(headers, rows);
-        return buildBorderLine(columnWidth).length();
-    }
-
-    private void printTable(ArrayList<Item> list, boolean showCategory) {
-        printTable(list, showCategory, "ITEMS");
-    }
-
-    private void printTable(ArrayList<Item> list, boolean showCategory, String title) {
-        if (list.isEmpty()) {
-            System.out.println("No items to display.");
-            System.out.println();
-            return;
-        }
-
-        String[] headers = getTableHeaders(showCategory);
-        ArrayList<String[]> rows = buildTableRows(list, showCategory);
-        int[] columnWidth = computeColumnWidths(headers, rows);
-
-        String border = buildBorderLine(columnWidth);
-        int innerWidth = border.length() - 2;
-
-        String titleBorder = "-".repeat(innerWidth + 2);
-        String titleRow = centerText(title, innerWidth + 2);
-        System.out.println(titleBorder);
-        System.out.println(titleRow);
-        System.out.println(border);
-        System.out.println(buildRowLine(headers, columnWidth));
-        System.out.println(border);
-
-        for (String[] row : rows) {
-            System.out.println(buildRowLine(row, columnWidth));
-        }
-
-        System.out.println(border);
-        System.out.println();
-    }
-
-    private String buildBorderLine(int[] columnWidth) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("-");
-
-        for (int width : columnWidth) {
-            sb.append("-".repeat(width + 2)).append("-");
-        }
-
-        return sb.toString();
-    }
-
-    private String buildRowLine(String[] values, int[] columnWidth) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(" ");
-
-        for (int c = 0; c < values.length; c++) {
-            sb.append(" ").append(String.format("%-" + columnWidth[c] + "s", values[c])).append("  ");
-        }
-
-        return sb.toString();
-    }
-
-    private void printCategoryList(int width) {
-        System.out.println(buildFilledBanner("ITEM CATEGORY LIST", width, '-'));
-        
-        for (String category : Validator.CATEGORIES) {
-            System.out.println(category);
-        }
-        System.out.println("-".repeat(width));
-    }
-
-    private String centerText(String text, int width) {
-        if (text.length() >= width) {
-            return text.substring(0, width);
-        }
-
-        int totalPadding = width - text.length();
-        int left = totalPadding / 2;
-        int right = totalPadding - left;
-        return " ".repeat(left) + text + " ".repeat(right);
-    }
-
-    private String buildFilledBanner(String title, int totalWidth, char fillChar) {
-        String labelWithSpaces = " " + title + " ";
-        if (totalWidth <= labelWithSpaces.length()) {
-            return labelWithSpaces;
-        }
-        int totalPadding = totalWidth - labelWithSpaces.length();
-        int left = totalPadding / 2;
-        int right = totalPadding - left;
-        String fill = String.valueOf(fillChar);
-        return fill.repeat(left) + labelWithSpaces + fill.repeat(right);
-    }
-
-    private int printHeaderBanner(String title) {
-        System.out.println();
-        String banner = "================ " + title + " ================";
-        System.out.println(banner);
-        return banner.length();
-    }
-
-    private int printHeaderBanner(String title, int targetWidth) {
-        System.out.println();
-        String banner = buildFilledBanner(title, targetWidth, '=');
-        System.out.println(banner);
-        return banner.length();
+        Design.printTable(lowStock, true, "LOW STOCK ITEMS");
     }
 }
