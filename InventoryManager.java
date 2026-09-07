@@ -35,7 +35,7 @@ public class InventoryManager {
 
             while (!validId) {
                 id = Validator.readValidId(sc, "Enter ID: ");
-                id = id.toUpperCase(); // IDs are always stored and shown in uppercase
+                id = id.toUpperCase();
                 if (Validator.findItemById(items, id) == null) {
                     validId = true;
                     break;
