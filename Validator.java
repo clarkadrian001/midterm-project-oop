@@ -25,6 +25,7 @@ public class Validator {
                 return i;
             }
         }
+
         return null;
     }
 
@@ -34,6 +35,7 @@ public class Validator {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -51,12 +53,14 @@ public class Validator {
             }
 
             choice = Character.getNumericValue(input.charAt(0));
+
             if (choice >= min && choice <= max) {
                 valid = true;
             } else {
                 System.out.println("Please enter a number between " + min + " and " + max + ".");
             }
         }
+
         return choice;
     }
 
@@ -75,12 +79,14 @@ public class Validator {
             }
 
             choice = Character.getNumericValue(input.charAt(0));
+
             if (choice >= min && choice <= max) {
                 valid = true;
             } else {
                 System.out.println("Please enter a number between " + min + " and " + max + ".");
             }
         }
+
         return choice;
     }
 
@@ -102,10 +108,12 @@ public class Validator {
 
     public static String readNonEmptyString(Scanner sc, String prompt) {
         String value;
+
         while (true) {
             System.out.print(prompt);
             value = sc.nextLine().trim();
             checkForCancel(value);
+
             if (value.isEmpty()) {
                 System.out.println("Input cannot be empty. Please try again.");
             } else if (value.length() > MAX_NAME_LENGTH) {
@@ -117,13 +125,12 @@ public class Validator {
     }
 
     public static boolean isValidId(String id) {
-        return !id.isEmpty()
-                && id.length() <= MAX_ID_LENGTH
-                && id.matches("[a-zA-Z0-9]+");
+        return !id.isEmpty() && id.length() <= MAX_ID_LENGTH && id.matches("[a-zA-Z0-9]+");
     }
 
     public static String readValidId(Scanner sc, String prompt) {
         String value;
+
         while (true) {
             System.out.print(prompt);
             value = sc.nextLine().trim();
@@ -146,8 +153,10 @@ public class Validator {
             System.out.print(prompt);
             String input = sc.nextLine().trim();
             checkForCancel(input);
+
             try {
                 int value = Integer.parseInt(input);
+
                 if (value < 0) {
                     System.out.println("Quantity cannot be negative. Please try again.");
                 } else if (value > MAX_QUANTITY) {
@@ -166,8 +175,10 @@ public class Validator {
             System.out.print(prompt);
             String input = sc.nextLine().trim();
             checkForCancel(input);
+
             try {
                 double value = Double.parseDouble(input);
+                
                 if (value < 0) {
                     System.out.println("Price cannot be negative. Please try again.");
                 } else if (value > MAX_PRICE) {

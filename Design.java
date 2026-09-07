@@ -6,6 +6,7 @@ public class Design {
         long decimalPart = scaledPrice % Validator.PRICE_SCALE;
 
         int decimalPlaces;
+
         if (decimalPart % 100 == 0) {
             decimalPlaces = 2;
         } else if (decimalPart % 10 == 0) {
@@ -16,6 +17,7 @@ public class Design {
 
         String decimalDigits = String.format("%04d", decimalPart).substring(0, decimalPlaces);
         String wholePartFormatted = String.format("%,d", wholePart);
+
         return "Php " + wholePartFormatted + "." + decimalDigits;
     }
 
@@ -30,12 +32,14 @@ public class Design {
 
         for (Item i : list) {
             String priceText = formatPrice(i.getPrice());
+
             if (showCategory) {
                 rows.add(new String[]{i.getId(), i.getName(), String.valueOf(i.getQuantity()), priceText, i.getCategory()});
             } else {
                 rows.add(new String[]{i.getId(), i.getName(), String.valueOf(i.getQuantity()), priceText});
             }
         }
+
         return rows;
     }
 
@@ -46,11 +50,13 @@ public class Design {
         for (int c = 0; c < columnCount; c++) {
             columnWidth[c] = headers[c].length();
         }
+
         for (String[] row : rows) {
             for (int c = 0; c < columnCount; c++) {
                 columnWidth[c] = Math.max(columnWidth[c], row[c].length());
             }
         }
+
         return columnWidth;
     }
 
@@ -58,9 +64,11 @@ public class Design {
         if (list.isEmpty()) {
             return 42;
         }
+
         String[] headers = getTableHeaders(showCategory);
         ArrayList<String[]> rows = buildTableRows(list, showCategory);
         int[] columnWidth = computeColumnWidths(headers, rows);
+
         return buildBorderLine(columnWidth).length();
     }
 
@@ -72,6 +80,7 @@ public class Design {
         if (list.isEmpty()) {
             System.out.println("No items to display.");
             System.out.println();
+
             return;
         }
 
@@ -93,6 +102,7 @@ public class Design {
         for (String[] row : rows) {
             System.out.println(buildRowLine(row, columnWidth));
         }
+
         System.out.println(border);
         System.out.println();
     }
@@ -104,6 +114,7 @@ public class Design {
         for (int width : columnWidth) {
             sb.append("-".repeat(width + 2)).append("-");
         }
+
         return sb.toString();
     }
 
@@ -114,6 +125,7 @@ public class Design {
         for (int c = 0; c < values.length; c++) {
             sb.append(" ").append(String.format("%-" + columnWidth[c] + "s", values[c])).append("  ");
         }
+
         return sb.toString();
     }
 
@@ -123,6 +135,7 @@ public class Design {
         for (String category : Validator.CATEGORIES) {
             System.out.println(category);
         }
+
         System.out.println("-".repeat(width));
     }
 
@@ -130,21 +143,26 @@ public class Design {
         if (text.length() >= width) {
             return text.substring(0, width);
         }
+
         int totalPadding = width - text.length();
         int left = totalPadding / 2;
         int right = totalPadding - left;
+
         return " ".repeat(left) + text + " ".repeat(right);
     }
 
     public static String buildFilledBanner(String title, int totalWidth, char fillChar) {
         String labelWithSpaces = " " + title + " ";
+
         if (totalWidth <= labelWithSpaces.length()) {
             return labelWithSpaces;
         }
+
         int totalPadding = totalWidth - labelWithSpaces.length();
         int left = totalPadding / 2;
         int right = totalPadding - left;
         String fill = String.valueOf(fillChar);
+
         return fill.repeat(left) + labelWithSpaces + fill.repeat(right);
     }
 
@@ -152,6 +170,7 @@ public class Design {
         System.out.println();
         String banner = "================ " + title + " ================";
         System.out.println(banner);
+
         return banner.length();
     }
 
@@ -159,6 +178,7 @@ public class Design {
         System.out.println();
         String banner = buildFilledBanner(title, targetWidth, '=');
         System.out.println(banner);
+        
         return banner.length();
     }
 
@@ -167,6 +187,7 @@ public class Design {
         String[] values = {item.getId(), item.getName(), item.getCategory(), String.valueOf(item.getQuantity()), formatPrice(item.getPrice())};
 
         int maxLabelLength = 0;
+
         for (String label : labels) {
             maxLabelLength = Math.max(maxLabelLength, label.length());
         }
@@ -190,6 +211,7 @@ public class Design {
         for (String line : lines) {
             System.out.println(line);
         }
+        
         System.out.println(detailsBorder);
         System.out.println();
     }

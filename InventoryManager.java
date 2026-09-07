@@ -3,7 +3,6 @@ import java.util.Scanner;
 
 public class InventoryManager {
     private ArrayList<Item> items;
-
     public InventoryManager() {
         items = new ArrayList<>();
     }
@@ -23,6 +22,7 @@ public class InventoryManager {
                 if (category.equals("0")) {
                     throw new CancelledException();
                 }
+
                 if (Validator.isValidCategory(category)) {
                     validCategory = true;
                     break;
@@ -36,10 +36,12 @@ public class InventoryManager {
             while (!validId) {
                 id = Validator.readValidId(sc, "Enter ID: ");
                 id = id.toUpperCase();
+
                 if (Validator.findItemById(items, id) == null) {
                     validId = true;
                     break;
                 }
+
                 System.out.println("An item with ID " + id + " already exists!");
             }
 
@@ -77,8 +79,10 @@ public class InventoryManager {
             System.out.println();
             System.out.println("The inventory doesn't have an item to update. Please add an item first.");
             System.out.println();
+
             return;
         }
+
         Design.printHeaderBanner("UPDATE ITEM");
 
         try {
@@ -88,10 +92,12 @@ public class InventoryManager {
             while (!validId) {
                 String id = Validator.readValidId(sc, "Enter ID of item to update: ");
                 item = Validator.findItemById(items, id);
+
                 if (item != null) {
                     validId = true;
                     break;
                 }
+
                 System.out.println("Item not found!");
             }
 
@@ -106,6 +112,7 @@ public class InventoryManager {
                 int newValue = Validator.readPositiveInt(sc, "Enter new Quantity: ");
 
                 item.setQuantity(newValue);
+
                 System.out.println("Quantity of Item " + item.getName() + " is updated from " + oldValue + " to " + newValue);
                 System.out.println();
             } else {
@@ -113,6 +120,7 @@ public class InventoryManager {
                 long newValue = Validator.readPositivePrice(sc, "Enter new Price: ");
 
                 item.setPrice(newValue);
+
                 System.out.println("Price of Item " + item.getName() + " is updated from " + Design.formatPrice(oldValue) + " to " + Design.formatPrice(newValue));
                 System.out.println();
             }
@@ -128,8 +136,10 @@ public class InventoryManager {
             System.out.println();
             System.out.println("The inventory doesn't have an item to remove. Please add an item first.");
             System.out.println();
+
             return;
         }
+
         Design.printHeaderBanner("REMOVE ITEM");
 
         try {
@@ -144,6 +154,7 @@ public class InventoryManager {
                     validId = true;
                     break;
                 }
+
                 System.out.println("Item not found!");
             }
 
@@ -162,6 +173,7 @@ public class InventoryManager {
             System.out.println();
             System.out.println("The inventory doesn't have an item to display by category. Please add an item first.");
             System.out.println();
+
             return;
         }
 
@@ -180,6 +192,7 @@ public class InventoryManager {
                 if (category.equals("0")) {
                     throw new CancelledException();
                 }
+
                 if (Validator.isValidCategory(category)) {
                     validCategory = true;
                 } else {
@@ -207,6 +220,7 @@ public class InventoryManager {
             System.out.println();
             System.out.println("The inventory doesn't have an item to display. Please add an item first.");
             System.out.println();
+
             return;
         }
 
@@ -221,6 +235,7 @@ public class InventoryManager {
             System.out.println();
             System.out.println("The inventory doesn't have an item to search. Please add an item first.");
             System.out.println();
+
             return;
         }
 
@@ -231,6 +246,7 @@ public class InventoryManager {
             while (!validId) {
                 String id = Validator.readValidId(sc, "Enter ID to search: ");
                 item = Validator.findItemById(items, id);
+                
                 if (item != null) {
                     validId = true;
                 } else {
@@ -251,6 +267,7 @@ public class InventoryManager {
             System.out.println();
             System.out.println("The inventory doesn't have an item to sort. Please add an item first.");
             System.out.println();
+
             return;
         }
         Design.printHeaderBanner("SORT ITEMS");
@@ -297,6 +314,7 @@ public class InventoryManager {
             System.out.println();
             System.out.println("The inventory doesn't have an item. Please add and item first.");
             System.out.println();
+            
             return;
         }
 
